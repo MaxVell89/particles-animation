@@ -1,0 +1,89 @@
+* {
+	outline: none;
+	margin: 0;
+	padding: 0;
+	-webkit-tap-highlight-color: transparent;
+	/* отклчение подсветки на тач-устройствах */
+}
+
+html {
+	height: 100%;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+	-ms-overflow-style: scrollbar;
+	box-sizing: border-box;
+	font-size: 16px; /* Для svg */
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+ol,
+ul {
+	list-style: none;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+img {
+	border: 0;
+	vertical-align: bottom;
+	max-width: 100%;
+	height: auto;
+}
+
+button::-moz-focus-inner,
+input::-moz-focus-inner {
+	border: 0;
+	padding: 0;
+}
+
+input,
+button,
+textarea,
+select {
+	resize: none;
+	font-family: inherit;
+	font-size: inherit;
+	font-weight: inherit;
+	border-radius: 0;
+	box-shadow: none;
+	color: inherit;
+}
+
+// Chrome
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+// Firefox
+input[type="number"] {
+	-moz-appearance: textfield;
+}
+input[type="number"]:hover,
+input[type="number"]:focus {
+	-moz-appearance: number-input;
+}
+
+// other
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+
+	&:hover {
+		text-decoration: none;
+	}
+}

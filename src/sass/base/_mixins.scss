@@ -1,0 +1,595 @@
+// блок с соотношением сторон
+// @include responsive-ratio(16,9);
+@mixin ratio($x,$y, $pseudo: true) {
+	$padding: unquote( ( $y / $x ) * 100 + '%' );
+	@if $pseudo {
+		&:before {
+			content: '';
+			position: relative;
+			display: block;
+			width: 100%;
+			padding-top: $padding;
+		}
+	} @else {
+		padding-top: $padding;
+	}
+}
+
+// плейсхолдер
+@mixin placeholder {
+	&::placeholder {
+		@content;
+	}
+}
+
+@mixin prevent-text {
+	word-break: break-all;
+	word-break: break-word;
+	hyphens: auto;
+}
+
+@mixin selection {
+	& ::selection {
+		@content;
+	}
+}
+
+// обрезка однострочного текста
+@mixin text-overflow() {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+@mixin v-center() {
+	white-space: nowrap;
+
+	&:before {
+		content: '';
+		height: 100%;
+		display: inline-block;
+		vertical-align: middle;
+		font-size: 0;
+		width: 0;
+		overflow: hidden;
+	}
+}
+
+@mixin centerer-x() {
+	left: 50%;
+	transform: translateX(-50%);
+}
+
+@mixin centerer-y() {
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+@mixin centerer() {
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+}
+
+@mixin hover() {
+	.no-touch &:hover {
+		@content;
+	}
+}
+
+@mixin coverdiv() {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+@mixin bg-cover() {
+	background-repeat: no-repeat;
+	background-size: cover;
+	background-position: 50% 50%;
+}
+
+// font-family
+@mixin font($alias, $name, $weight: normal, $style: normal) {
+	@font-face {
+		font-family: $alias;
+		src: url("../fonts/" + $name + ".woff2") format("woff2"), url("../fonts/" + $name + ".woff") format("woff");
+		font-weight: $weight;
+		font-style: $style;
+		//font-display: swap;
+	}
+}
+// @include font(black, cytiapro-black-webfont)
+
+// ofi
+@mixin ofi($fit: fill, $position: null) {
+	object-fit: $fit;
+	@if $position {
+		object-position: $position;
+		font-family: 'object-fit: #{$fit}; object-position: #{$position}';
+	} @else {
+		font-family: 'object-fit: #{$fit}';
+	}
+}
+
+@mixin img-cover() {
+	@include ofi(cover, center);
+}
+
+// crop text
+@mixin crop($lines, $lineHeight) {
+	overflow: hidden;
+	max-height: $lines * $lineHeight * 1px;
+}
+
+// crop text
+@mixin ellipsis($lineHeight, $lines: 2) {
+	overflow: hidden;
+	max-height: $lineHeight * $lines;
+	text-overflow: ellipsis;
+
+	display: block; /* Fallback for non-webkit */
+
+	// Webkit solution for multiline ellipsis
+	display: -webkit-box;
+
+	@supports (-webkit-line-clamp: 4) and (-webkit-box-orient: vertical) {
+		/*! autoprefixer: off */
+		-webkit-box-orient: vertical;
+		/*! autoprefixer: on */
+		-webkit-line-clamp: $lines;
+	}
+
+	// Solution for Opera
+	//text-overflow: -o-ellipsis-lastline;
+}
+
+@mixin ellipsisOff() {
+	overflow: visible;
+	max-height: none;
+	display: block;
+
+	@supports (-webkit-line-clamp: 4) {
+		-webkit-line-clamp: none;
+	}
+}
+
+@mixin nth-delay($from: 1, $to: 10, $start: 0, $delay: 0.1) {
+	@for $i from $from to $to {
+		// $delay: ($i - 1) * $delay;
+		$d: $start + $i * $delay;
+		&:nth-child(#{$i}) {
+			transition-delay: #{$d}s;
+		}
+	}
+}
+
+@mixin nth-content($from: 1, $to: 10) {
+	$to: $to + 1;
+	@for $i from $from to $to {
+		&:nth-child(#{$i}) {
+			@content;
+		}
+	}
+}
+
+// fluid Font Size
+@function strip-unit($number) {
+	@if type-of($number) == 'number' and not unitless($number) {
+		@return $number / ($number * 0 + 1);
+	}
+
+	@return $number;
+}
+
+@function calcFluidFontSize($f-min, $f-max, $w-min, $w-max, $units: px) {
+	$f-min: strip-unit($f-min);
+	$f-max: strip-unit($f-max);
+	$w-min: strip-unit($w-min);
+	$w-max: strip-unit($w-max);
+
+	$k: ($f-max - $f-min)/($w-max - $w-min);
+	$b: $f-min - $k * $w-min;
+
+	$b: $b + $units;
+
+	@return calc(#{$k} * 100vw + #{$b});
+}
+
+@mixin fluidFontSize($f-min, $f-max, $w-min, $w-max, $fallback: false) {
+
+	font-size: $f-min;
+
+	@media (min-width: $w-min) {
+		@if ($fallback) {
+			font-size: $fallback;
+		}
+
+		font-size: calcFluidFontSize($f-min, $f-max, $w-min, $w-max, px);
+	}
+
+	@media (min-width: $w-max) {
+		font-size: $f-max;
+	}
+}
+// .fluid-font-size {
+//   @include fluidFontSize(16px, 24px, 480px, 1280px, 18px);
+// }
+
+@function getFz($width) {
+	@return calc(100vw / #{$width} * 10);
+}
+
+@mixin setFz($width) {
+	font-size: getFz($width);
+}
+
+// TRIANGLES
+@mixin triangle($side,$color,$size) {
+	@if $side == left {
+		border: $size solid transparent;
+		border-right: $size solid $color;
+	}
+	@if $side == right {
+		border: $size solid transparent;
+		border-left: $size solid $color;
+	}
+	@if $side == top {
+		border: $size solid transparent;
+		border-bottom: $size solid $color;
+	}
+	@if $side == bottom {
+		border: $size solid transparent;
+		border-top: $size solid $color;
+	}
+}
+
+@mixin triangle_narrow($side,$color,$size) {
+	$narrow_size: $size/2;
+	@if $side == left {
+		border: $narrow_size solid transparent;
+		border-right: $size solid $color;
+	}
+	@if $side == right {
+		border: $narrow_size solid transparent;
+		border-left: $size solid $color;
+	}
+	@if $side == top {
+		border: $narrow_size solid transparent;
+		border-bottom: $size solid $color;
+	}
+	@if $side == bottom {
+		border: $narrow_size solid transparent;
+		border-top: $size solid $color;
+	}
+}
+
+// ARROW
+@mixin arrow($direction,$color:#000,$width:1rem,$arrow_width:.1rem) {
+	width: $width;
+	height: $width;
+	transform: rotate(45deg);
+
+	@if $direction == right {
+		border-top: $arrow_width solid $color;
+		border-right: $arrow_width solid $color;
+		border-bottom: 0;
+		border-left: 0;
+	}
+	@if $direction == bottom {
+		border-right: $arrow_width solid $color;
+		border-bottom: $arrow_width solid $color;
+		border-top: 0;
+		border-left: 0;
+	}
+	@if $direction == left {
+		border-bottom: $arrow_width solid $color;
+		border-left: $arrow_width solid $color;
+		border-top: 0;
+		border-right: 0;
+	}
+	@if $direction == top {
+		border-left: $arrow_width solid $color;
+		border-top: $arrow_width solid $color;
+		border-bottom: 0;
+		border-right: 0;
+	}
+}
+
+// OVERLAY (FULL WIDTH BACKGROUND)
+@mixin overlay($color, $z-index: 0) {
+	position: relative;
+	z-index: $z-index;
+
+	&:before {
+		content: "";
+		z-index: -1;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 50%;
+		width: calc(var(--vw, 1vw) * 100);
+		height: 100%;
+		margin: 0 0 0 calc(var(--vw, 1vw) * -50);
+		background: $color;
+	}
+}
+
+// DASHED BORDER
+@mixin dashed-border($dashlength, $spacelength, $borderwidth, $color) {
+	$per: percentage($dashlength / ($dashlength + $spacelength));
+	background-image: linear-gradient(to right, $color 0%, $color $per, rgba(0, 0, 0, 0) $per),
+	linear-gradient(to bottom, $color 0%, $color $per, rgba(0, 0, 0, 0) $per),
+	linear-gradient(to right, $color 0%, $color $per, rgba(0, 0, 0, 0) $per),
+	linear-gradient(to bottom, $color 0%, $color $per, rgba(0, 0, 0, 0) $per);
+	background-position: (-$spacelength) 0, 0 (-$spacelength), (-$spacelength) 100%, 100% (-$spacelength);
+	background-size: ($dashlength + $spacelength) $borderwidth, $borderwidth ($dashlength + $spacelength), ($dashlength + $spacelength) $borderwidth, $borderwidth ($dashlength + $spacelength);
+	background-repeat: repeat-x, repeat-y, repeat-x, repeat-y;
+}
+
+// CUSTOM SCROLL BAR
+%scroll_rediz_1 {
+	&::-webkit-scrollbar {
+		width: 6px;
+		height: 12px;
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		width: 6px;
+		height: 12px;
+		border-radius: 12px;
+	}
+
+	&::-webkit-scrollbar-corner {
+		background: transparent;
+	}
+}
+
+%custom-scroll {
+	$track: #d9d9d9;
+	$thumb: #6c6c6c;
+
+	/* firefox */
+	scrollbar-width: thin;
+	scrollbar-color: $thumb $track;
+
+	&::-webkit-scrollbar {
+		width: 4px;
+		height: 4px;
+	}
+
+	&::-webkit-scrollbar-button {
+		display: none
+	}
+
+	&::-webkit-scrollbar-track {
+		background-color: $track;
+		border-radius: 3px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background-color: $thumb;
+		border-radius: 3px;
+		opacity: .5;
+		transition: opacity .3s ease;
+	}
+
+	&::-webkit-scrollbar-thumb:hover {
+		opacity: 1;
+	}
+}
+
+@mixin last-margin {
+	&:first-child {
+		margin-top: 0;
+	}
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+@mixin exp-area($value: 10px) {
+	content: '';
+	cursor: pointer;
+	display: block;
+	position: absolute;
+	top: -$value;
+	bottom: -$value;
+	left: -$value;
+	right: -$value;
+}
+
+// Z-INDEX
+@function z-index($key) {
+	@return map-get($z-index, $key);
+}
+
+// grid
+@mixin flex-row {
+	display: flex;
+	flex-wrap: wrap;
+}
+
+@mixin row-offset($gap: $gap) {
+	margin-left: -($gap/2);
+	margin-right: -($gap/2);
+}
+
+@mixin row() {
+	@include flex-row();
+	@include row-offset();
+}
+
+@function p($num, $cols, $offset: 0) {
+	@if $offset != 0 {
+		@return calc(#{percentage($num/$cols)} + #{$offset});
+	} @else {
+		@return percentage($num/$cols);
+	}
+}
+
+@function pMinus($num, $cols, $gap: $gap) {
+	@return calc(#{percentage($num/$cols)} - #{$gap});
+}
+
+@function pPlus($num, $cols, $gap: $gap) {
+	@return calc(#{percentage($num/$cols)} + #{$gap});
+}
+
+@function em($size, $context: 16) {
+	@return ($size/$context) * 1em;
+}
+
+@mixin size($num, $cols) {
+	width: percentage($num/$cols);
+}
+
+@mixin sizeMinus($num, $cols, $halfGap: $halfGap) {
+	width: calc(#{percentage($num/$cols)} - #{$halfGap});
+}
+
+@mixin sizePlus($num, $cols, $halfGap: $halfGap) {
+	width: calc(#{percentage($num/$cols)} + #{$halfGap});
+}
+
+@mixin col($gap: $gap) {
+	padding-left: ($gap/2);
+	padding-right: ($gap/2);
+}
+
+@mixin colm($gap: $gap) {
+	margin-left: ($gap/2);
+	margin-right: ($gap/2);
+}
+
+@mixin shift($n, $columns, $gap, $padding: false) {
+	$val: 100% / $columns * $n;
+	$halfGap: $gap/2;
+	@if $padding {
+		padding-left: #{calc(#{$val} + #{$halfGap})};
+		padding-right: #{calc(#{$val} + #{$halfGap})};
+	} @else {
+		margin-left: #{calc(#{$val} + #{$halfGap})};
+		margin-right: #{calc(#{$val} + #{$halfGap})};
+	}
+}
+
+@mixin shift-left($n, $columns, $gap: $gap, $padding: false) {
+	$val: 100% / $columns * $n;
+	$halfGap: $gap/2;
+	@if $padding {
+		padding-left: #{calc(#{$val} + #{$halfGap})};
+	} @else {
+		margin-left: #{calc(#{$val} + #{$halfGap})};
+	}
+}
+
+@mixin shift-right($n, $columns, $gap, $padding: false){
+	$val: 100% / $columns * $n;
+	$halfGap: $gap/2;
+	@if $padding {
+		padding-right: #{calc(#{$val} + #{$halfGap})};
+	} @else {
+		margin-right: #{calc(#{$val} + #{$halfGap})};
+	}
+}
+
+// responsive
+@mixin xxl-screen(){
+	@media screen and (max-width: $break_xxl){
+		@content;
+	}
+}
+@mixin xl-screen(){
+	@media screen and (max-width: $break_xl){
+		@content;
+	}
+}
+@mixin lg-screen(){
+	@media screen and (max-width: $break_lg){
+		@content;
+	}
+}
+@mixin md-screen(){
+	@media screen and (max-width: $break_md){
+		@content;
+	}
+}
+@mixin sm-screen(){
+	@media screen and (max-width: $break_sm){
+		@content;
+	}
+}
+@mixin xs-screen(){
+	@media screen and (max-width: $break_xs){
+		@content;
+	}
+}
+@mixin xxs-screen(){
+	@media screen and (max-width: $break_xxs){
+		@content;
+	}
+}
+
+@mixin isIE() {
+	@media all and (-ms-high-contrast:none) {
+		@content;
+	}
+}
+
+@mixin r($width) {
+	@media screen and (max-width: $width) {
+		@content;
+	}
+}
+
+@mixin rmin($width) {
+	@media screen and (min-width: $width) {
+		@content;
+	}
+}
+
+@mixin rd($widthMin, $widthMax) {
+	@media screen and (min-width: $widthMin) and (max-width: $widthMax) {
+		@content;
+	}
+}
+
+@mixin rh($height) {
+	@media screen and (max-height: $height) {
+		@content;
+	}
+}
+
+@mixin rhmin($height) {
+	@media screen and (min-height: $height) {
+		@content;
+	}
+}
+
+@mixin rhd($heightMin, $heightMax) {
+	@media screen and (min-height: $heightMin) and (max-height: $heightMax) {
+		@content;
+	}
+}
+
+@mixin retina() {
+	@media only screen and (-webkit-min-device-pixel-ratio: 2), only screen and (min-device-pixel-ratio: 2) {
+		@content;
+	}
+}
+
+@function max($numbers...) {
+	@return m#{a}x(#{$numbers});
+}
+
+@function min($numbers...) {
+	@return m#{i}n(#{$numbers});
+}

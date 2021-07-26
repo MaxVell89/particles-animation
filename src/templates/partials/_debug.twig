@@ -1,0 +1,51 @@
+<div class="debug">
+    <div class="container">
+        <div class="debug__row">
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+            <div class="debug__col"><div class="debug__col-inner"></div></div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .debug {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: 9999999;
+    }
+
+    .debug__row {
+        display: flex;
+        margin: 0 -15px;
+    }
+    .debug__col {
+        padding: 0 15px;
+        width: calc(100% / 12);
+    }
+    .debug__col-inner {
+        border-left: 1px solid #28fdff;
+        border-right: 1px solid #28fdff;
+        height: 100vh;
+        opacity: .5;
+    }
+
+    @media (max-width: 767px) {
+        .debug {
+            display: none;
+        }
+    }
+</style>
