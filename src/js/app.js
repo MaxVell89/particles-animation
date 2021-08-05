@@ -17,12 +17,9 @@ const createGeometry = require('three-bmfont-text')
 // var MSDFShader = require('three-bmfont-text/shaders/msdf');
 const MSDFShader = require('./modules/msdf');
 
-// console.log(MSDFShader);
 import fontTexture from '../img/font/manifold.png'
 // import font from './modules/manifold.json'
 import font from './modules/font'
-
-console.log(font)
 
 export default class Sketch {
     constructor(options) {
@@ -73,8 +70,8 @@ export default class Sketch {
     mouseEvents(){
         window.addEventListener('mousemove',(event)=>{
             this.mouse = {
-                x: event.clientX/window.innerWidth,
-                y: event.clientY/window.innerHeight,
+                x: event.clientX/window.innerWidth * 2.0,
+                y: event.clientY/window.innerHeight * 2.0 - 1.0,
             }
             this.materialText.uniforms.uMouse.value = new THREE.Vector2(this.mouse.x,this.mouse.y)
             this.material.uniforms.uMouse.value = new THREE.Vector2(this.mouse.x,this.mouse.y)
@@ -119,7 +116,6 @@ export default class Sketch {
         }))
 
         let layout = this.geom.layout
-        console.log(layout);
         let text = new THREE.Mesh(this.geom, this.materialText)
         text.scale.set(0.01,-0.01,0.01);
         text.position.set(-0.01*layout.width/2, -0.01*layout.height/2,0)
@@ -188,7 +184,6 @@ export default class Sketch {
         this.material.uniforms.time.value = this.time;
         if(this.materialText) {
             this.materialText.uniforms.time.value = this.time;
-            console.log(this.materialText.uniforms);
         }
         requestAnimationFrame(this.render.bind(this));
         this.renderer.render(this.scene, this.camera);

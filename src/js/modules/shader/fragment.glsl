@@ -1,4 +1,4 @@
-varying vec2 vUv;
+//varying vec2 vUv;
 uniform vec2 viewport;
 uniform vec2 uMouse;
 float createCircle() {
