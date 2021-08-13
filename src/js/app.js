@@ -118,8 +118,8 @@ export default class Sketch {
         // var aspect = window.innerWidth / window.innerHeight;
         // this.camera = new THREE.OrthographicCamera( frustumSize * aspect / - 2, frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, -1000, 1000 );
         //this.camera.position.set(0, 0, 2);
-        this.camera.position.z = 300;
-        this.camera.fov = 2*Math.atan( (viewport.height/2)/300 )* (180/Math.PI);
+        this.camera.position.z = 500;
+        this.camera.fov = 2*Math.atan( (viewport.height/2)/this.camera.position.z )* (180/Math.PI);
         //this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.time = 0;
         this.mouse2 = {x:0,y:0};
