@@ -36,7 +36,7 @@ const viewport = {
     height: window.innerHeight,
     scale: 1.0, //(t = isMobile ? 1080 : 1920, e = isMobile ? 0 : .6, n = isMobile ? 2 : 1, Object(l.a)(window.innerWidth / t, e, n)),
     pixelRatio: Math.min(window.devicePixelRatio, 2),
-    uiPixelRatio: 2
+    uiPixelRatio: Math.min(window.devicePixelRatio, 2),
 };
 
 const pointer = {position: [.5, .5], positionNorm: [.5, .5], active: false, click: 0};
