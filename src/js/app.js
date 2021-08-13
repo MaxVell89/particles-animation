@@ -554,8 +554,8 @@ export default class Sketch {
 
         this.mouseNorm[0] += .12 * (positionNormX - this.mouseNorm[0]);
         this.mouseNorm[1] += .12 * (positionNormY - this.mouseNorm[1] + s);
-        this.mouse[0] = deNormalize(this.mouseNorm[0], -width / 2 / viewport.pixelRatio, width / 2 / viewport.pixelRatio);
-        this.mouse[1] = deNormalize(this.mouseNorm[1], height / 2 / viewport.pixelRatio, -height / 2 / viewport.pixelRatio);
+        this.mouse[0] = deNormalize(this.mouseNorm[0], -width / 4, width / 4);
+        this.mouse[1] = deNormalize(this.mouseNorm[1], height / 4, -height / 4);
 
         //console.log(this.mouse[0]);
 
